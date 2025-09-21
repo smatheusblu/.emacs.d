@@ -98,6 +98,7 @@
 - [[#tldr][TLDR]]
 - [[#transparency][TRANSPARENCY]]
 - [[#which-key][WHICH-KEY]]
+- [[#zoxide][Zoxide]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 
@@ -2334,75 +2335,6 @@ Eshell is an Emacs 'shell' that is written in Elisp.
 (setq eshell-banner-message "")
 #+end_src
 
-*** Zoxide Eshell
-Enable zoxide for eshell.
-#+begin_src emacs-lisp
-;; Basic zoxide integration for Emacs
-(require 'consult)
-
-;; Auto-add directories to zoxide database
-(add-hook 
- 'dired-mode-hook 
- (lambda () 
-   (when (and dired-directory (file-directory-p dired-directory))
-     (call-process-shell-command 
-      (format "zoxide add %s" (shell-quote-argument dired-directory)) nil 0))))
-
-(add-hook 
- 'find-file-hook 
- (lambda () 
-   (when (and buffer-file-name (file-exists-p buffer-file-name))
-     (call-process-shell-command 
-      (format "zoxide add %s" (shell-quote-argument (file-name-directory buffer-file-name))) 
-      nil 0))))
-
-;; Interactive directory finder using zoxide
-(defun find-file-with-zoxide ()
-  "Use zoxide to find and navigate to directories."
-  (interactive)
-  (let ((target (consult--read
-                 (consult--process-collection (lambda (x) (list "zoxide" "query" "-l" x)))
-                 :prompt "Zoxide: "
-                 :require-match nil
-                 :lookup #'consult--lookup-member
-                 :require-match t
-                 :category 'file
-                 :sort nil)))
-    (if target
-        (let ((default-directory (concat target "/")))
-          (call-interactively 'find-file))
-      (call-interactively 'find-file))))
-
-;; Eshell integration
-(defun eshell/z (&optional pattern)
-  "Change directory using zoxide in eshell."
-  (if pattern
-      (let ((dir (string-trim
-                  (shell-command-to-string
-                   (format "zoxide query %s" (shell-quote-argument pattern))))))
-        (if (and (not (string-empty-p dir)) (file-directory-p dir))
-            (progn
-              (eshell/cd dir)
-              (eshell-emit-prompt))
-          (message "No directory found for pattern: %s" pattern)))
-    ;; No pattern - show interactive selection
-    (let ((dirs (split-string 
-                 (shell-command-to-string "zoxide query -l") "\n" t)))
-      (when dirs
-        (let ((selected (completing-read "Jump to: " dirs nil t)))
-          (when selected
-            (eshell/cd selected)
-            (eshell-emit-prompt)))))))
-
-;; Alternative eshell command for interactive mode
-(defun eshell/zi ()
-  "Interactive zoxide directory selection in eshell."
-  (eshell/z))
-
-;; Keybinding suggestion
-(global-set-key (kbd "C-x C-z") 'find-file-with-zoxide)
-#+end_src
-
 ** Vterm
 Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.  By default, the shell is set to 'fish' but could change it to 'bash' or 'zsh' if you prefer.
 #+begin_src emacs-lisp
@@ -2516,4 +2448,84 @@ Which-key is a minor mode for Emacs that displays the key bindings following you
         which-key-max-description-length 25
         which-key-allow-imprecise-window-fit nil
         which-key-separator " → " ))
+#+end_src
+
+* Zoxide
+Enable zoxide for eshell.
+#+begin_src emacs-lisp
+;; Zoxide integration for Emacs with consult
+(require 'consult nil t)  ; Load consult if available
+
+;; Auto-add directories to zoxide database
+(add-hook 
+ 'dired-mode-hook 
+ (lambda () 
+   (when (and dired-directory (file-directory-p dired-directory))
+     (call-process-shell-command 
+      (format "zoxide add %s" (shell-quote-argument dired-directory)) nil 0))))
+
+(add-hook 
+ 'find-file-hook 
+ (lambda () 
+   (when (and buffer-file-name (file-exists-p buffer-file-name))
+     (call-process-shell-command 
+      (format "zoxide add %s" (shell-quote-argument (file-name-directory buffer-file-name))) 
+      nil 0))))
+
+;; Enhanced directory finder using zoxide with consult (if available)
+(defun find-file-with-zoxide ()
+  "Use zoxide to find and navigate to directories."
+  (interactive)
+  (if (featurep 'consult)
+      ;; Use consult if available
+      (let ((target (consult--read
+                     (consult--process-collection (lambda (x) (list "zoxide" "query" "-l" x)))
+                     :prompt "Zoxide: "
+                     :require-match nil
+                     :lookup #'consult--lookup-member
+                     :require-match t
+                     :category 'file
+                     :sort nil)))
+        (if target
+            (let ((default-directory (concat target "/")))
+              (call-interactively 'find-file))
+          (call-interactively 'find-file)))
+    ;; Fallback to simple completing-read
+    (let* ((dirs (split-string 
+                  (shell-command-to-string "zoxide query -l") "\n" t))
+           (target (when dirs
+                     (completing-read "Zoxide: " dirs nil t))))
+      (if target
+          (let ((default-directory (concat target "/")))
+            (call-interactively 'find-file))
+        (call-interactively 'find-file)))))
+
+;; Eshell integration
+(defun eshell/z (&optional pattern)
+  "Change directory using zoxide in eshell."
+  (if pattern
+      (let ((dir (string-trim
+                  (shell-command-to-string
+                   (format "zoxide query %s" (shell-quote-argument pattern))))))
+        (if (and (not (string-empty-p dir)) (file-directory-p dir))
+            (progn
+              (eshell/cd dir)
+              (eshell-emit-prompt))
+          (message "No directory found for pattern: %s" pattern)))
+    ;; No pattern - show interactive selection
+    (let ((dirs (split-string 
+                 (shell-command-to-string "zoxide query -l") "\n" t)))
+      (when dirs
+        (let ((selected (completing-read "Jump to: " dirs nil t)))
+          (when selected
+            (eshell/cd selected)
+            (eshell-emit-prompt)))))))
+
+;; Alternative eshell command for interactive mode
+(defun eshell/zi ()
+  "Interactive zoxide directory selection in eshell."
+  (eshell/z))
+
+;; Keybinding suggestion
+(global-set-key (kbd "C-x C-z") 'find-file-with-zoxide)
 #+end_src
