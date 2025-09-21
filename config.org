@@ -52,7 +52,9 @@
   - [[#git-time-machine][Git Time Machine]]
 - [[#golden-ratio][GOLDEN RATIO]]
 - [[#highlight-todo][HIGHLIGHT TODO]]
-- [[#indent-bars][INDENT BARS]]
+- [[#indentation][INDENTATION]]
+  - [[#dtrt-indent][dtrt-indent]]
+  - [[#indent-bars][Indent Bars]]
 - [[#language-support][LANGUAGE SUPPORT]]
   - [[#apheleia-formatting][Apheleia formatting]]
   - [[#general][General]]
@@ -82,6 +84,7 @@
 - [[#rainbow-delimiters][RAINBOW DELIMITERS]]
 - [[#rainbow-mode][RAINBOW MODE]]
 - [[#sane-defaults][SANE DEFAULTS]]
+- [[#session-management][Session Management]]
 - [[#line-numbers][Line Numbers]]
 - [[#shells-and-terminals][SHELLS AND TERMINALS]]
   - [[#eshell][Eshell]]
@@ -918,7 +921,8 @@ This is where i define all my keybindings, using general and which-key.
   "u" '(universal-argument :wk "Universal argument")
   "RET" '(app-launcher-run-app :wk "Emacs App Launcher")
   ";" '(embark-act :wk "Embark act") ; Alternative since you use . for find-file
-  "," '(embark-dwim :wk "Embark dwim"))
+  "," '(embark-dwim :wk "Embark dwim")
+  "ESC ESC" '(easysession-reset :wk "Reset Session"))
 
 (dt/leader-keys
    "a"   '(:ignore t :wk "AI")
@@ -1182,6 +1186,15 @@ This is where i define all my keybindings, using general and which-key.
   "s M" '(consult-global-mark :wk "Global mark"))
 
 (dt/leader-keys
+  "S" '(:ignore t :wk "Sessions")
+  "S s" '(easysession-save-as :wk "Save session as")
+  "S S" '(easysession-save :wk "Save session")
+  "S l" '(easysession-load :wk "Switch to/Load session")  
+  "S d" '(easysession-delete :wk "Delete session")
+  "S r" '(easysession-rename :wk "Rename session")
+  "S L" '(easysession-switch-to-and-restore-geometry :wk "Switch to/Load session and restore geometry"))
+
+(dt/leader-keys
   "t" '(:ignore t :wk "Toggle")
   "t e" '(eshell-toggle :wk "Toggle eshell")
   "t f" '(flycheck-mode :wk "Toggle flycheck")
@@ -1280,9 +1293,19 @@ Adding highlights to TODO and related words.
 
 #+end_src
 
-* INDENT BARS
-This provides indentation bars to my code.
+* INDENTATION
 
+** dtrt-indent
+An Emacs minor mode that guesses the indentation offset originally used for creating source code files and transparently adjusts the corresponding settings in Emacs, making it more convenient to edit foreign files.
+#+begin_src emacs-lisp
+(use-package dtrt-indent
+  :ensure t
+  :config
+  (dtrt-indent-global-mode 1))
+#+end_src
+
+** Indent Bars
+This provides indentation bars to my code.
 #+begin_src emacs-lisp
 (use-package indent-bars
   :ensure t
@@ -2165,7 +2188,6 @@ The following settings are simple modes that are enabled (or disabled) so that E
 
 #+begin_src emacs-lisp
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
-(save-place-mode 1)
 (electric-indent-mode 1)    ;; Turn on the indenting that Emacs does by default.
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
@@ -2216,6 +2238,34 @@ The following settings are simple modes that are enabled (or disabled) so that E
  vc-follow-symlinks t)
 ;; make sure to focus when a new emacsclient frame created
 (add-hook 'server-after-make-frame-hook (lambda () (select-frame-set-input-focus (selected-frame))))
+#+end_src
+
+* Session Management
+This configures general session management and enable manually saving and loading sessions.
+
+#+begin_src emacs-lisp
+(use-package easysession
+  :ensure t
+  :config
+  (setq easysession-save-dir "~/.emacs.d/easysession/")
+  (setq easysession-mode-line-misc-info t)
+  (add-to-list 'savehist-additional-variables 'easysession--current-session-name))
+
+;; Save cursor position
+(use-package saveplace
+  :ensure nil
+  :config
+  (save-place-mode 1))
+
+(use-package savehist
+  :ensure nil
+  :hook
+  (after-init . savehist-mode)
+  :config
+  (add-to-list 'savehist-additional-variables 'kill-ring)
+  (add-to-list 'savehist-additional-variables 'mark-ring)
+  (add-to-list 'savehist-additional-variables 'search-ring)
+  (add-to-list 'savehist-additional-variables 'regexp-search-ring))
 #+end_src
 
 * Line Numbers
