@@ -1,4 +1,3 @@
-;; -*- coding: utf-8 -*-
 #+TITLE: smatheusblu's Emacs Config
 #+AUTHOR: Matheus Nogueira Silveira (smatheusblu)
 #+DESCRIPTION: smatheusblu's personal Emacs config.
@@ -34,7 +33,6 @@
   - [[#github-copilot-chat][Github Copilot Chat]]
 - [[#backup][BACKUP]]
 - [[#beacon][BEACON]]
-- [[#bindkey][BINDKEY]]
 - [[#breadcrumb][BREADCRUMB]]
 - [[#buffer-terminator][BUFFER TERMINATOR]]
 - [[#clipboard][CLIPBOARD]]
@@ -245,10 +243,6 @@ This configures a flashy highlight to show where the cursor is when moving a lot
   :ensure t
   :config
   (beacon-mode 1))
-#+end_src
-
-* BINDKEY
-#+begin_src emacs-lisp
 #+end_src
 
 * BREADCRUMB
