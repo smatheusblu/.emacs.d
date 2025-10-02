@@ -1,3 +1,4 @@
+;; -*- coding: utf-8 -*-
 #+TITLE: smatheusblu's Emacs Config
 #+AUTHOR: Matheus Nogueira Silveira (smatheusblu)
 #+DESCRIPTION: smatheusblu's personal Emacs config.
@@ -109,9 +110,6 @@
 - [[#theme][THEME]]
   - [[#themes][Themes]]
   - [[#doom-themes][doom-themes]]
-  - [[#ef-themes][ef-themes]]
-  - [[#remove-background-on-line-numbers][Remove Background on line numbers]]
-- [[#tldr][TLDR]]
 - [[#transparency][TRANSPARENCY]]
 - [[#which-key][WHICH-KEY]]
 - [[#zoxide][ZOXIDE]]
@@ -351,7 +349,6 @@ Corfu enhances in-buffer completion with a small completion popup. The current c
   (corfu-popupinfo-delay '(0.1 . 0.1))  ; Faster documentation popup
   (corfu-popupinfo-hide nil)
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
   (corfu-auto-delay 0.1)         ;; Faster auto-completion trigger
   (corfu-auto-prefix 1)          ;; Start completion after 1 character
   (corfu-separator ?\s)          ;; Orderless field separator
@@ -447,7 +444,6 @@ Cape provides Completion At Point Extensions which can be used in combination wi
                       #'cape-dabbrev))
     ;; Force Corfu auto-completion to be more aggressive in Python
     (setq-local corfu-auto t)
-    (setq-local corfu-auto-delay 0.0)  ; Immediate trigger
     (setq-local corfu-auto-prefix 1)   ; After 1 character
     ;; Don't activate signature help - basedpyright doesn't support it
     (message "Python completion setup completed"))
@@ -596,7 +592,7 @@ Vertico provides a performant and minimalistic vertical completion UI based on t
                     :files ("*.el"))
   :hook (prog-mode . copilot-mode)
   :custom
-  (copilot-idle-delay 0.1)
+  (copilot-idle-delay 0.3)
   (copilot-max-char 100000)
   :bind (:map copilot-completion-map
               ;; Use C-TAB for Copilot since TAB is used by Corfu
@@ -915,7 +911,7 @@ Evil is an extensible vi layer for Emacs. It emulates the main features of Vim, 
 (use-package evil-org
   :ensure t
   :after org
-  :hook (org-mode . (lambda () evil-org-mode))
+  :hook (org-mode . evil-org-mode)
   :config
   ;; Enable evil-org for org-agenda
   (require 'evil-org-agenda)
@@ -1895,7 +1891,7 @@ Add and configure the lsp-mode for major programming languages.
   (setq lsp-semantic-tokens-honor-refresh-requests t)
   (setq lsp-semantic-tokens-apply-modifiers t)
   (setq lsp-print-performance nil)
-  (setq lsp-idle-delay 0.3)  ; Faster response for completion triggers
+  (setq lsp-idle-delay 0.5)  ; Faster response for completion triggers
   (setq lsp-signature-auto-activate nil)  ; Disable signature help - basedpyright doesn't support it
   (setq lsp-signature-render-documentation nil)
   
@@ -2918,7 +2914,7 @@ Org-bullets gives us attractive bullets rather than asterisks.
 ** Diminish Org Indent Mode
 Removes "Ind" from showing in the modeline.
 #+begin_src emacs-lisp
-(eval-after-load 'org-indent '(diminish 'org-indent-mode))
+(with-eval-after-load 'org-indent (diminish 'org-indent-mode))
 #+end_src
 
 ** Download and Screenshot
@@ -3230,15 +3226,7 @@ Org Roam improves note taking and connections.
   ;; Use modern `sqlcmd` client instead of legacy `osql`
   (setq sql-ms-program "sqlcmd")
   ;; Force TLS connection (Azure requires encryption)
-  (setq sql-ms-options '("-N" "-C"))
-  ;; Define named connection
-  (setq sql-connection-alist
-      '((charlie-mssql-connection
-         (sql-product 'ms)
-         (sql-server "********")
-         (sql-database "*****")
-         (sql-user "*****")
-         (sql-password "*****")))))
+  (setq sql-ms-options '("-N" "-C")))
 #+end_src
 
 ** Olivetti Mode
@@ -3592,6 +3580,8 @@ Some extra themes.
 (use-package everforest
   :ensure (:host github :repo "Theory-of-Everything/everforest-emacs")
   :defer t)
+(use-package ef-themes
+  :ensure t)
 #+end_src
 
 ** doom-themes
@@ -3599,38 +3589,13 @@ Doom Emacs pack with all its extra themes.
 #+begin_src emacs-lisp
 (use-package doom-themes
   :config
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; Sets the default theme to load!!! 
-  ;;(load-theme 'doom-one t)
+  (setq doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+  (load-theme 'doom-dracula t)
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-#+end_src
-
-** ef-themes
-This is where the theme gets selected, im also installing ef-themes here.
-#+begin_src emacs-lisp
-(use-package ef-themes
-  :ensure t
-  :config
-  (load-theme 'doom-gruvbox t))
-#+end_src
-
-** Remove Background on line numbers
-#+begin_src emacs-lisp
-(custom-set-faces
- '(line-number ((t (:background nil))))
- '(line-number-current-line ((t (:background nil))))
- '(org-block ((t (:background nil)))))
-#+end_src
-
-* TLDR
-"TLDR" refere-se tanto a um serviço de documentação resumida ("Too Long; Didn't Read") que pode ser acedido através de uma aplicação de linha de comandos como também a uma extensão para o Emacs, designada por tldr.el, que permite aceder a essas mesmas informações concisas diretamente de dentro do editor, utilizando o comando M-x tldr. 
-#+begin_src emacs-lisp
-(use-package tldr)
 #+end_src
 
 * TRANSPARENCY
@@ -3652,7 +3617,7 @@ Which-key is a minor mode for Emacs that displays the key bindings following you
   (setq which-key-sort-order #'which-key-key-order-alpha
         which-key-sort-uppercase-first nil
         which-key-add-column-padding 1
-        which-key-idle-delay 0.4
+        which-key-idle-delay 0.3
         which-key-max-description-length 25
         which-key-separator " → "))
 #+end_src
