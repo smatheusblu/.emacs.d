@@ -38,7 +38,7 @@
                              (fullscreen . 0)
                              (undecorated . t)
                              (width . 70)
-                             (height . 20))))
+                             (height . 25))))
         (buf (get-buffer-create "emacs-float")))
 
     (when (and initial-frame
@@ -72,7 +72,7 @@
     (setq initial-buffer-choice nil) ; Prevent dashboard from opening
     (let ((initial-frame (selected-frame))
           (frame (make-frame '((name . "emacs-capture")
-                               (fullscreen . 0)
+                               (fullscreen . t)
                                (undecorated . t)
                                (width . 80)
                                (height . 25)))))
@@ -102,7 +102,7 @@
 
         ;; Force capture to happen in current frame
         (org-capture nil "N")
-
+        
         ;; Set up the capture buffer
         (setq-local header-line-format
                     (format " %s to save or %s to cancel."

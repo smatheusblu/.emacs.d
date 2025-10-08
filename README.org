@@ -89,6 +89,7 @@
   - [[#nov-mode][Nov Mode]]
   - [[#org-modern-mode][Org Modern Mode]]
   - [[#org-level-headers][Org Level Headers]]
+  - [[#org-noter][Org Noter]]
   - [[#org-roam][Org Roam]]
   - [[#org-sql][Org SQL]]
   - [[#olivetti-mode][Olivetti Mode]]
@@ -107,15 +108,15 @@
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-Toggle]]
 - [[#sudo-edit][SUDO EDIT]]
+- [[#speed-type][SPEED-TYPE]]
 - [[#theme][THEME]]
   - [[#themes][Themes]]
-  - [[#doom-themes][doom-themes]]
+- [[#tldr][TLDR]]
 - [[#transparency][TRANSPARENCY]]
 - [[#which-key][WHICH-KEY]]
 - [[#zoxide][ZOXIDE]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
-
 ** Adding the scripts directory to path
 This configures some .el custom scripts to initialize with emacs.
 #+begin_src emacs-lisp
@@ -165,7 +166,6 @@ Git client for Emacs.
 
 * ALL THE ICONS
 This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
-  
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :ensure t
@@ -179,7 +179,6 @@ This is an icon set that can be used with dashboard, dired, ibuffer and other Em
 
 * AVY
 This for moving inside a buffer using characters close to the homerow to identify where the user wants to go on the screen.
-
 #+begin_src emacs-lisp
 ;; 1. Make C-s use Avy
 (use-package avy
@@ -191,7 +190,6 @@ This for moving inside a buffer using characters close to the homerow to identif
 
 * AI
 This is where all AI capabilities are getting configured.
-
 ** Github Copilot Chat 
 #+begin_src emacs-lisp
 ;; Copilot Chat for interactive AI assistance
@@ -228,14 +226,12 @@ This is where all AI capabilities are getting configured.
 #+end_src
 * BACKUP 
 By default, Emacs creates automatic backups of files in their original directories, such "file.el" and the backup "file.el~".  This leads to a lot of clutter, so let's tell Emacs to put all backups that it creates in the =TRASH= directory.
-
 #+begin_src emacs-lisp
 (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 #+end_src
 
 * BEACON
 This configures a flashy highlight to show where the cursor is when moving a lot on the screen.
-
 #+begin_src emacs-lisp
 (use-package beacon
   :ensure t
@@ -275,7 +271,6 @@ This automatically closes buffers that are not in use.
 
 * CLIPBOARD
 This is to fix the clipboard not working properly with wayland
-
 #+begin_src emacs-lisp
 (when (executable-find "wl-copy")
   (defun wl-copy (text)
@@ -313,7 +308,6 @@ This is to fix the clipboard not working properly with wayland
 
 * COMPLETION AND SNIPPETS
 This is for configuring all types of completion, including in buffer and popup.
-
 ** Orderless
 This package provides an orderless completion style that divides the pattern into space-separated components, and matches candidates that match all of the components in any order. Each component can match in any one of several ways: literally, as a regexp, as an initialism, in the flex style, or as multiple word prefixes. By default, regexp and literal matches are enabled.
 #+begin_src emacs-lisp
@@ -454,7 +448,6 @@ Cape provides Completion At Point Extensions which can be used in combination wi
   (python-mode . my/python-mode-setup)
   (python-ts-mode . my/python-mode-setup))
 #+end_src
-
 
 ** Yasnippet
 YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet.
@@ -741,7 +734,6 @@ This is to view and edit csv files in a table like structure.
 
 * DASHBOARD
 Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
-
 #+begin_src emacs-lisp
 (use-package dashboard
   :ensure t 
@@ -778,7 +770,6 @@ Emacs Dashboard is an extensible startup screen showing you recent files, bookma
 
 * DIMINISH
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.  With this package installed, you can add ':diminish' to any use-package block to hide that particular mode in the modeline.
-
 #+begin_src emacs-lisp
 (use-package diminish)
 #+end_src
@@ -807,7 +798,6 @@ Dired makes an Emacs buffer containing a listing of a directory, and optionally 
 
 * DRAG-STUFF
 [[https://github.com/rejeep/drag-stuff.el][Drag Stuff]] is a minor mode for Emacs that makes it possible to drag stuff (words, region, lines) around in Emacs.  When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, and M-right.
-
 #+begin_src emacs-lisp
 (use-package drag-stuff
   :init
@@ -817,7 +807,6 @@ Dired makes an Emacs buffer containing a listing of a directory, and optionally 
 
 * EDIFF
 'ediff' is a diff program that is built into Emacs.  By default, 'ediff' splits files vertically and places the 'help' frame in its own window.  I have changed this so the two files are split horizontally and the 'help' frame appears as a lower split within the existing window.  Also, I create my own 'dt-ediff-hook' where I add 'j/k' for moving to next/prev diffs.  By default, this is set to 'n/p'.
-
 #+begin_src emacs-lisp
 (setq ediff-split-window-function 'split-window-horizontally
       ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -832,12 +821,12 @@ Dired makes an Emacs buffer containing a listing of a directory, and optionally 
 
 * EVIL MODE
 Evil is an extensible vi layer for Emacs. It emulates the main features of Vim, and provides facilities for writing custom extensions.
-
 #+begin_src emacs-lisp
 (use-package evil
     :init      ;; tweak evil's configuration before loading it
     (setq evil-want-integration t  ;; This is optional since it's already set to t by default.
           evil-want-keybinding nil
+          evil-want-C-u-scroll t
           evil-vsplit-window-right t
           evil-split-window-below t
           evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
@@ -917,8 +906,8 @@ Evil is an extensible vi layer for Emacs. It emulates the main features of Vim, 
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
   ;; Set key themes - these control which evil-org features are enabled
-  (evil-org-set-key-theme '(navigation insert textobjects additional shift todo heading))
-  
+  (evil-org-set-key-theme '(navigation insert textobjects additional shift todo))
+
   ;; Ensure org-agenda starts in motion state (modern approach)
   (with-eval-after-load 'evil
     (evil-set-initial-state 'org-agenda-mode 'motion)))
@@ -985,7 +974,6 @@ Custom region selection.
 
 * FLYCHECK
 Install =luacheck= from your Linux distro's repositories for flycheck to work correctly with lua files.  Install =python-pylint= for flycheck to work with python files.  Haskell works with flycheck as long as =haskell-ghc= or =haskell-stack-ghc= is installed.  For more information on language support for flycheck, [[https://www.flycheck.org/en/latest/languages.html][read this]].
-
 #+begin_src emacs-lisp
 (use-package flycheck
   :ensure (:host github :repo "flycheck/flycheck")
@@ -997,7 +985,6 @@ Install =luacheck= from your Linux distro's repositories for flycheck to work co
 
 * FONTS
 Defining the various fonts that Emacs will use.
-
 ** Setting the Font Face
 This configures the different types of fonts used in emacs.
 #+begin_src emacs-lisp
@@ -1043,7 +1030,6 @@ You can use CTRL plus the mouse wheel for zooming in/out.
 
 * GENERAL KEYBINDINGS
 This is where i define all my keybindings, using general and which-key.
-
 #+begin_src emacs-lisp
 (use-package general
   :ensure t
@@ -1069,7 +1055,8 @@ This is where i define all my keybindings, using general and which-key.
     "u" '(universal-argument :wk "Universal argument 🔢")
     "RET" '(app-launcher-run-app :wk "Emacs App Launcher 🚀")
     "C-g" '(easysession-reset :wk "Reset Session 🔄")
-    "z" '(find-file-with-zoxide :wk "Find file with zoxide 🔍"))
+    "z" '(find-file-with-zoxide :wk "Find file with zoxide 🔍")
+    "T" '(speed-type-text :wk "Typing Test"))
 
   ;; AGENDA AND AI (Enhanced)
   (dt/leader-keys
@@ -1081,7 +1068,8 @@ This is where i define all my keybindings, using general and which-key.
     "a w" '((lambda () (interactive) (org-agenda nil "w")) :wk "Weekly review 📊")
     "a f" '((lambda () (interactive) (org-agenda nil "f")) :wk "Focus mode 🎯")
     "a H" '((lambda () (interactive) (org-agenda nil "H")) :wk "Habits dashboard 🔄")
-    "a c" '((lambda () (interactive) (org-agenda nil "c")) :wk "Clock review ⏰")
+    "a c" '(calendar :wk "Toggle calendar 📅")
+    "a C" '((lambda () (interactive) (org-agenda nil "c")) :wk "Clock review ⏰")
     "a p" '((lambda () (interactive) (org-agenda nil "p")) :wk "Planning view 📋")
     "a s" '((lambda () (interactive) (org-agenda nil "s")) :wk "Stuck projects 🚧")
     "a t" '(org-todo-list :wk "All todos")
@@ -1178,7 +1166,7 @@ This is where i define all my keybindings, using general and which-key.
     "c c" '(org-capture :wk "Capture menu 📝")
     "c t" '((lambda () (interactive) (org-capture nil "t")) :wk "Quick todo 📋")
     "c n" '((lambda () (interactive) (org-capture nil "n")) :wk "Next action ➡️")
-    "c p" '((lambda () (interactive) (org-capture nil "p")) :wk "Priority todo ⭐")
+    "c P" '((lambda () (interactive) (org-capture nil "p")) :wk "Priority todo ⭐")
     "c h" '(:ignore t :wk "Habits 🔄")
     "c h d" '((lambda () (interactive) (org-capture nil "h")) :wk "Daily")
     "c h w" '((lambda () (interactive) (org-capture nil "H")) :wk "Weekdays")
@@ -1193,7 +1181,7 @@ This is where i define all my keybindings, using general and which-key.
     "c h e" '((lambda () (interactive) (org-capture nil "e")) :wk "Exercise")
     "c i" '((lambda () (interactive) (org-capture nil "i")) :wk "Interruption ⚠️")
     "c w" '((lambda () (interactive) (org-capture nil "w")) :wk "Work task 💼")
-    "c r" '((lambda () (interactive) (org-capture nil "r")) :wk "Personal task 🏠")
+    "c p" '((lambda () (interactive) (org-capture nil "r")) :wk "Personal task 🏠")
     "c m" '((lambda () (interactive) (org-capture nil "m")) :wk "Meeting 👥")
     "c e" '((lambda () (interactive) (org-capture nil "e")) :wk "Exercise 💪")
     "c l" '((lambda () (interactive) (org-capture nil "l")) :wk "Learning 📚")
@@ -1521,7 +1509,6 @@ This is where i define all my keybindings, using general and which-key.
     "o l" '(org-store-link :wk "Store link 🔗")
     "o T" '(my/quick-tag-task :wk "Quick tag 🏷️")
     "o t" '(:ignore t :wk "Todo/Tasks ✅")
-    "o s" '(my/sync-all-calendars :wk "Sync calendars 🔄")
     "o t d" '(org-deadline :wk "Set deadline ⏰")
     "o t p" '(org-priority :wk "Set priority ⭐")
     "o t r" '(org-refile :wk "Refile task 📂")
@@ -1580,7 +1567,6 @@ This is where i define all my keybindings, using general and which-key.
               (if (derived-mode-p 'org-agenda-mode)
                   (org-agenda-todo)
                 (org-todo))) :wk "Cycle states 🔄")
-    "t c" '(calendar :wk "Toggle calendar 📅")
     "t f" '(flycheck-mode :wk "Toggle flycheck ✓")
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers 🔢")
     "t n" '(neotree-toggle :wk "Toggle neotree file viewer 🌳")
@@ -1604,6 +1590,7 @@ This is where i define all my keybindings, using general and which-key.
     "w j" '(evil-window-down :wk "Window down ⬇️")
     "w k" '(evil-window-up :wk "Window up ⬆️")
     "w l" '(evil-window-right :wk "Window right ➡️")
+    "w o" '(olivetti-mode :wk "Center Window")
     "w w" '(evil-window-next :wk "Next window 🔄")
     "w H" '(buf-move-left :wk "Move buffer left ⬅️")
     "w J" '(buf-move-down :wk "Move buffer down ⬇️")
@@ -1681,7 +1668,6 @@ This is where i define all my keybindings, using general and which-key.
 
 * GOLDEN RATIO
 Automatically resizes the window in focus, using the golden ratio to redefine the size of all windows.
-
 #+begin_src emacs-lisp
 (use-package golden-ratio
   :ensure t
@@ -1712,7 +1698,6 @@ Automatically resizes the window in focus, using the golden ratio to redefine th
 
 * HIGHLIGHT TODO
 Adding highlights to TODO and related words.
-
 #+begin_src emacs-lisp
 (use-package hl-todo
   :hook ((org-mode . hl-todo-mode)
@@ -1729,7 +1714,6 @@ Adding highlights to TODO and related words.
 #+end_src
 
 * INDENTATION
-
 ** dtrt-indent
 An Emacs minor mode that guesses the indentation offset originally used for creating source code files and transparently adjusts the corresponding settings in Emacs, making it more convenient to edit foreign files.
 #+begin_src emacs-lisp
@@ -1761,7 +1745,6 @@ This provides indentation bars to my code.
 
 * LANGUAGE SUPPORT
 Emacs has built-in programming language modes for Lisp, Scheme, DSSSL, Ada, ASM, AWK, C, C++, Fortran, Icon, IDL (CORBA), IDLWAVE, Java, Javascript, M4, Makefiles, Metafont, Modula2, Object Pascal, Objective-C, Octave, Pascal, Perl, Pike, PostScript, Prolog, Python, Ruby, Simula, SQL, Tcl, Verilog, and VHDL.  Other languages will require you to install additional modes.
-
 ** Apheleia formatting
 Good code is automatically formatted by tools like Black or Prettier so that you and your team spend less time on formatting and more time on building features. It's best if your editor can run code formatters each time you save a file, so that you don't have to look at badly formatted code or get surprised when things change just before you commit. 
 #+begin_src emacs-lisp
@@ -2193,7 +2176,6 @@ This is to have line numbers
 
 * MARKDOWN MODE
 Enables markdown mode.
-
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :ensure t
@@ -2205,14 +2187,12 @@ Enables markdown mode.
 
 * MINIBUFFER ESCAPE
 By default, Emacs requires you to hit ESC three times to escape quit the minibuffer.  
-
 #+begin_src emacs-lisp
 (global-set-key [escape] 'keyboard-escape-quit)
 #+end_src
 
 * MODELINE
 The modeline is the bottom status bar that appears in Emacs windows.  While you can create your own custom modeline, why go to the trouble when Doom Emacs already has a nice modeline package available.  For more information on what is available to configure in the Doom modeline, check out: [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
-
 #+begin_src emacs-lisp
 (use-package doom-modeline
   :ensure t
@@ -2241,12 +2221,10 @@ The modeline is the bottom status bar that appears in Emacs windows.  While you 
 
 * NEOTREE
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  NeoTree provides following themes: classic, ascii, arrow, icons, and nerd.  Theme can be configed by setting "two" themes for neo-theme: one for the GUI and one for the terminal.  I like to use 'SPC t' for 'toggle' keybindings, so I have used 'SPC t n' for toggle-neotree.
-
 | COMMAND        | DESCRIPTION                 | KEYBINDING |
 |----------------+------------------  ---------+------------|
 | neotree-toggle | /Toggle neotree/            | SPC t n    |
 | neotree- dir   | /Open directory in neotree/ | SPC d n    |
-
 #+BEGIN_SRC emacs-lisp
 (use-package neotree
   :ensure t
@@ -2311,7 +2289,6 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
 
 * ORG MODE
 All org mode configurations.
-
 ** Agenda
 #+begin_src emacs-lisp
 ;; Basic agenda settings for clean daily view
@@ -2343,10 +2320,6 @@ All org mode configurations.
 
 ;; Align tags to the right in agenda view
 (setq org-agenda-tags-column -140)  ; Negative number aligns to right, adjust value as needed
-
-;; Remove grey background from agenda items
-(setq org-agenda-block-separator ""
-      hl-line-mode nil)
 
 ;; Enhanced agenda item formatting with icons and context
 ;; (setq org-agenda-prefix-format 
@@ -3168,6 +3141,13 @@ This changes the size of org headers.
  '(org-level-7 ((t (:inherit outline-7 :height 1.1)))))
 #+end_src
 
+** Org Noter
+#+begin_src emacs-lisp
+(use-package org-noter
+  :ensure t
+  :after (nov pdf-tools)
+  :commands org-noter)
+#+end_src
 ** Org Roam
 Org Roam improves note taking and connections.
 #+begin_src emacs-lisp
@@ -3281,7 +3261,6 @@ Package to center text.
 
 * PDFs
 [[https://github.com/vedang/pdf-tools][pdf-tools]] is a replacement of DocView for viewing PDF files inside Emacs.  It uses the =poppler= library, which also means that 'pdf-tools' can by used to modify PDFs.  I use to disable 'display-line-numbers-mode' in 'pdf-view-mode' because line numbers crash it.
-
 #+begin_src emacs-lisp
 (use-package pdf-tools
   :defer t
@@ -3302,7 +3281,6 @@ Package to center text.
 
 * PERSPECTIVE
 [[https://github.com/nex3/perspective-el][Perspective]] provides multiple named workspaces (or "perspectives") in Emacs, similar to multiple desktops in window managers.  Each perspective has its own buffer list and its own window layout, along with some other isolated niceties, like the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Xref.html][xref]] ring.
-
 #+begin_src emacs-lisp
 (use-package perspective
   :custom
@@ -3363,7 +3341,6 @@ Package to center text.
 
 * RAINBOW DELIMITERS
 Adding rainbow coloring to parentheses.
-
 #+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :hook ((emacs-lisp-mode . rainbow-delimiters-mode)
@@ -3372,7 +3349,6 @@ Adding rainbow coloring to parentheses.
 
 * RAINBOW MODE
 Display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.
-
 #+begin_src emacs-lisp
 (use-package rainbow-mode
   :diminish
@@ -3381,8 +3357,12 @@ Display the actual color as a background for any hex color value (ex. #ffffff). 
 
 * SANE DEFAULTS
 The following settings are simple modes that are enabled (or disabled) so that Emacs functions more like you would expect a proper editor/IDE to function.
-
 #+begin_src emacs-lisp
+(pixel-scroll-precision-mode 1)
+;; Optional: Enable interpolation for page-up/down commands
+(setq pixel-scroll-precision-interpolate-page t)
+(setq scroll-conservatively 10
+      scroll-margin 5) ; Adjust values to your preference
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
 (electric-indent-mode 1)    ;; Turn on the indenting that Emacs does by default.
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
@@ -3420,8 +3400,6 @@ The following settings are simple modes that are enabled (or disabled) so that E
  revert-without-query '(".*")
  ;; non-unique buffer name display: unique-part/non-unique-filename
  uniquify-buffer-name-style 'forward
- ;; supposed to make scrolling faster on hold
- fast-but-imprecise-scrolling t
  ;; correctly resize windows by pixels (e.g. in `split-window' functions)
  window-resize-pixelwise t
  ;; disable annoying "ad-handle-definition: 'something' got redefined" warnings
@@ -3438,7 +3416,6 @@ The following settings are simple modes that are enabled (or disabled) so that E
 
 * SESSION MANAGEMENT
 This configures general session management and enable manually saving and loading sessions.
-
 #+begin_src emacs-lisp
 (use-package easysession
   :ensure t
@@ -3466,7 +3443,6 @@ This configures general session management and enable manually saving and loadin
 
 * SHELLS AND TERMINALS
 In my configs, all of my shells (bash, fish, zsh and the ESHELL) require my shell-color-scripts-git package to be installed.  On Arch Linux, you can install it from the AUR.  Otherwise, go to my shell-color-scripts repository on GitLab to get it.
-
 ** Eshell
 Eshell is an Emacs 'shell' that is written in Elisp.
 #+begin_src emacs-lisp
@@ -3561,9 +3537,13 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
 (use-package sudo-edit)
 #+end_src
 
+* SPEED-TYPE
+#+begin_src emacs-lisp
+(use-package speed-type
+  :ensure t)
+#+end_src
 * THEME
 This is where I configure the theme that will be utilized.
-
 ** Themes
 Some extra themes.
 #+begin_src emacs-lisp
@@ -3582,25 +3562,51 @@ Some extra themes.
   :defer t)
 (use-package ef-themes
   :ensure t)
-#+end_src
-
-** doom-themes
-Doom Emacs pack with all its extra themes.
-#+begin_src emacs-lisp
+(use-package poet-theme
+  :ensure t)
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t)   ; if nil, bold is universally disabled
-  (load-theme 'doom-dracula t)
   ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (load-theme 'doom-ayu-dark t)
   (doom-themes-neotree-config)
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
+
+;; Make org agenda items more readable on dark themes
+(defun my/set-org-scheduled-faces ()
+  (when (facep 'org-scheduled-today)
+    (set-face-attribute 'org-scheduled-today nil :foreground "#9fb3c8")
+    (set-face-attribute 'org-scheduled-previously nil :foreground "#e5a35c")))
+(add-hook 'emacs-startup-hook #'my/set-org-scheduled-faces)
+(advice-add 'load-theme :after (lambda (&rest _)
+                                 (my/set-org-scheduled-faces)))
+
+(defun my/match-line-number-to-keyword-face ()
+  "Make the current-line number match keyword face color."
+  (let ((kw-col (face-attribute 'org-level-1 :foreground nil t)))
+    (when (and kw-col (not (eq kw-col 'unspecified)))
+      (set-face-attribute 'line-number-current-line nil
+                          :foreground kw-col
+                          :inherit nil))))
+
+;; For daemon mode - run when frame is created
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'my/match-line-number-to-keyword-face)
+  ;; For regular startup
+  (add-hook 'after-init-hook #'my/match-line-number-to-keyword-face))
+
+;; Also run when themes change
+(advice-add 'load-theme :after (lambda (&rest _) (my/match-line-number-to-keyword-face)))
 #+end_src
 
+* TLDR
+#+begin_src emacs-lisp
+(use-package tldr)
+#+end_src
 * TRANSPARENCY
 With Emacs version 29, true transparency has been added.  I have turned transparency off by setting the alpha to '100'.  If you want some slight transparency, try setting alpha to '90'.  Of course, if you set alpha to '0', the background of Emacs would completely transparent.
-
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(alpha-background . 100)) ; For all new frames henceforth
 #+end_src
@@ -3624,7 +3630,6 @@ Which-key is a minor mode for Emacs that displays the key bindings following you
 
 * ZOXIDE
 Enable zoxide for eshell.
-
 #+begin_src emacs-lisp
 ;; Zoxide integration for Emacs with consult
 (require 'consult nil t)  ; Load consult if available
@@ -3703,3 +3708,4 @@ Enable zoxide for eshell.
 ;; Keybinding suggestion
 (global-set-key (kbd "C-x C-z") 'find-file-with-zoxide)
 #+end_src
+
